@@ -95,8 +95,8 @@ export default function Home() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="text-4xl sm:text-6xl lg:text-7xl font-bold text-gray-900 mb-6"
           >
-            Empowering Young Leaders
-            <span className="block bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">
+            Empowering <span className="block bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">Young Leaders
+            
               
             </span>
           </motion.h1>
