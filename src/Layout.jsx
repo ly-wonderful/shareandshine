@@ -94,9 +94,11 @@ export default function Layout({ children, currentPageName }) {
             {/* Logo */}
             <Link to={createPageUrl("Home")} className="flex items-center space-x-3 group">
               <div className="relative">
-                <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-amber-500 rounded-2xl flex items-center justify-center transform group-hover:scale-110 transition-all duration-300 glow-effect">
-                  <Sparkles className="w-7 h-7 text-white" />
-                </div>
+                <img 
+                  src="/files/logo.jpg" 
+                  alt="Share&Shine Logo" 
+                  className="w-12 h-12 object-contain rounded-lg transform group-hover:scale-110 transition-all duration-300"
+                />
               </div>
               <div>
                 <h1 className="text-2xl font-bold shine-text">Share&Shine</h1>
@@ -182,9 +184,11 @@ export default function Layout({ children, currentPageName }) {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="col-span-1 md:col-span-2">
               <div className="flex items-center space-x-3 mb-4">
-                <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center">
-                  <Sparkles className="w-6 h-6" />
-                </div>
+                <img 
+                  src="/files/logo.jpg" 
+                  alt="Share&Shine Logo" 
+                  className="w-10 h-10 object-contain rounded-lg bg-white/10 p-1"
+                />
                 <h3 className="text-xl font-bold">Share&Shine</h3>
               </div>
               <p className="text-orange-100 max-w-md">
