@@ -95,12 +95,12 @@ export default function Layout({ children, currentPageName }) {
             <Link to={createPageUrl("Home")} className="flex items-center space-x-3 group">
               <div className="relative">
                 <img 
-                  src="/files/logo.jpg" 
+                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690912e2e24a08919180f76d/faf328dc6_ss.jpg" 
                   alt="Share&Shine Logo" 
-                  className="w-12 h-12 object-contain rounded-lg transform group-hover:scale-110 transition-all duration-300"
+                  className="w-16 h-16 object-contain transform group-hover:scale-110 transition-all duration-300"
                 />
               </div>
-              <div>
+              <div className="hidden sm:block">
                 <h1 className="text-2xl font-bold shine-text">Share&Shine</h1>
                 <p className="text-xs text-gray-600">Youth Leadership</p>
               </div>
@@ -185,9 +185,9 @@ export default function Layout({ children, currentPageName }) {
             <div className="col-span-1 md:col-span-2">
               <div className="flex items-center space-x-3 mb-4">
                 <img 
-                  src="/files/logo.jpg" 
+                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690912e2e24a08919180f76d/faf328dc6_ss.jpg" 
                   alt="Share&Shine Logo" 
-                  className="w-10 h-10 object-contain rounded-lg bg-white/10 p-1"
+                  className="w-12 h-12 object-contain rounded-lg bg-white/10 p-1"
                 />
                 <h3 className="text-xl font-bold">Share&Shine</h3>
               </div>
