@@ -94,10 +94,10 @@ export default function Home() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 30 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-4xl sm:text-6xl lg:text-7xl font-bold text-gray-900 mb-10 leading-tight"
+            className="text-4xl sm:text-6xl lg:text-7xl font-bold text-gray-900 mb-16 leading-snug"
           >
             Empowering{" "}
-            <span className="block bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent mt-2">
+            <span className="block bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent mt-4">
               Young Leaders
             </span>
           </motion.h1>
