@@ -93,7 +93,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 30 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-5xl sm:text-6xl lg:text-7xl font-bold text-gray-900 mb-6"
+            className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6"
           >
             Empowering
             <span className="block bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">
