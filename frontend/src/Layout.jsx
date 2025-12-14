@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, Sparkles, Users, Calendar, UserPlus, CalendarPlus, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import logoImage from "@/assets/logo no bkgd.png";
 
 const navigationItems = [
   { title: "Home", url: "/", icon: Sparkles },
@@ -93,7 +94,7 @@ export default function Layout({ children, currentPageName }) {
             <Link to="/" className="flex items-center space-x-3 group">
               <div className="relative">
                 <img 
-                  src="/src/assets/logo no bkgd.png" 
+                  src={logoImage} 
                   alt="Share&Shine Logo" 
                   className="w-16 h-16 object-contain transform group-hover:scale-110 transition-all duration-300"
                 />
