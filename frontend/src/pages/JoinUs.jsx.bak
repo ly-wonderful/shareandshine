@@ -1,0 +1,209 @@
+import React from "react";
+import { Link } from "react-router-dom";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Users, Handshake, ArrowRight, Heart, Target, Sparkles } from "lucide-react";
+import { motion } from "framer-motion";
+
+export default function JoinUs() {
+  const memberBenefits = [
+    {
+      icon: Users,
+      title: "Community Network",
+      description: "Connect with like-minded young leaders across diverse communities"
+    },
+    {
+      icon: Sparkles,
+      title: "Leadership Skills",
+      description: "Develop practical skills through hands-on projects and workshops"
+    },
+    {
+      icon: Heart,
+      title: "Make an Impact",
+      description: "Lead meaningful projects that create real change in your community"
+    },
+  ];
+
+  if (success) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="text-center max-w-md"
+        >
+          <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <CheckCircle className="w-16 h-16 text-green-600" />
+          </div>
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">Welcome to Share&Shine!</h2>
+          <p className="text-lg text-gray-600 mb-6">
+            Thank you for your application. We'll review it and get back to you soon via email.
+          </p>
+          <Button
+            onClick={() => setSuccess(false)}
+            className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600"
+          >
+            Submit Another Application
+          </Button>
+        </motion.div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-16"
+        >
+          <h1 className="text-5xl font-bold text-gray-900 mb-4">Join Share&Shine</h1>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            Ready to become a leader in your community? Start your journey with us today.
+          </p>
+        </motion.div>
+
+        <div className="grid lg:grid-cols-3 gap-8 mb-12">
+          {/* Benefits Cards */}
+          <div className="lg:col-span-3 grid md:grid-cols-3 gap-6">
+            {benefits.map((benefit, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+              >
+                <Card className="h-full text-center p-6 border-2 border-orange-200 hover:shadow-xl transition-all duration-300">
+                  <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-amber-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <benefit.icon className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">{benefit.title}</h3>
+                  <p className="text-gray-600">{benefit.description}</p>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* Application Form */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
+        >
+          <Card className="border-2 border-orange-200 shadow-2xl">
+            <CardHeader className="bg-gradient-to-r from-orange-50 to-amber-50 border-b">
+              <CardTitle className="text-3xl">Membership Application</CardTitle>
+              <p className="text-gray-600 mt-2">Tell us about yourself and why you want to join</p>
+            </CardHeader>
+            <CardContent className="p-8">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Full Name *</Label>
+                    <Input
+                      id="name"
+                      required
+                      value={formData.full_name}
+                      onChange={(e) => handleChange("full_name", e.target.value)}
+                      placeholder="Enter your full name"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email Address *</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      required
+                      value={formData.email}
+                      onChange={(e) => handleChange("email", e.target.value)}
+                      placeholder="your.email@example.com"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="phone">Phone Number</Label>
+                    <Input
+                      id="phone"
+                      type="tel"
+                      value={formData.phone}
+                      onChange={(e) => handleChange("phone", e.target.value)}
+                      placeholder="(555) 123-4567"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="age">Age</Label>
+                    <Input
+                      id="age"
+                      type="number"
+                      min="13"
+                      max="100"
+                      value={formData.age}
+                      onChange={(e) => handleChange("age", e.target.value)}
+                      placeholder="Your age"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="school">School / Organization</Label>
+                  <Input
+                    id="school"
+                    value={formData.school_organization}
+                    onChange={(e) => handleChange("school_organization", e.target.value)}
+                    placeholder="Your school or organization"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="interests">Areas of Interest / Skills</Label>
+                  <Textarea
+                    id="interests"
+                    value={formData.interests}
+                    onChange={(e) => handleChange("interests", e.target.value)}
+                    placeholder="e.g., Community service, event planning, graphic design, public speaking..."
+                    rows={3}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="why">Why do you want to join Share&Shine?</Label>
+                  <Textarea
+                    id="why"
+                    value={formData.why_join}
+                    onChange={(e) => handleChange("why_join", e.target.value)}
+                    placeholder="Tell us what motivates you and what you hope to achieve..."
+                    rows={4}
+                  />
+                </div>
+
+                <div className="pt-6">
+                  <Button
+                    type="submit"
+                    className="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white text-lg py-6 shadow-lg"
+                    disabled={submitMutation.isPending}
+                  >
+                    {submitMutation.isPending ? (
+                      <>
+                        <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                        Submitting Application...
+                      </>
+                    ) : (
+                      "Submit Application"
+                    )}
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+        </motion.div>
+      </div>
+    </div>
+  );
+}
