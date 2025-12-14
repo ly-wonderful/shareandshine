@@ -4,8 +4,11 @@ import { appParams } from '@/lib/app-params';
 const { appId, serverUrl, token } = appParams;
 
 // Create a custom axios instance connected to backend
+// In production, use empty string (same domain), in dev use localhost
+const baseURL = import.meta.env.VITE_API_URL || serverUrl || (import.meta.env.PROD ? '' : 'http://localhost:3000');
+
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || serverUrl || 'http://localhost:3000',
+  baseURL: baseURL,
   headers: {
     'Content-Type': 'application/json',
   },
