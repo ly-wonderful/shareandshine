@@ -1,12 +1,9 @@
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
-import { errorHandler, notFound } from '../middleware/errorHandler.js';
-import eventsRouter from '../routes/events.js';
-import membersRouter from '../routes/members.js';
-import partnersRouter from '../routes/partners.js';
-
-dotenv.config();
+import { errorHandler, notFound } from '../backend/middleware/errorHandler.js';
+import eventsRouter from '../backend/routes/events.js';
+import membersRouter from '../backend/routes/members.js';
+import partnersRouter from '../backend/routes/partners.js';
 
 const app = express();
 
@@ -22,7 +19,14 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: 'ShareShine Backend API is running' });
+  res.json({ 
+    status: 'ok', 
+    message: 'ShareShine Backend API is running',
+    env: {
+      hasSupabaseUrl: !!process.env.SUPABASE_URL,
+      hasSupabaseKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY
+    }
+  });
 });
 
 // API Routes
