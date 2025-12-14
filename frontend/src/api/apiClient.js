@@ -5,7 +5,7 @@ const { appId, serverUrl, token } = appParams;
 
 // Create a custom axios instance connected to backend
 const apiClient = axios.create({
-  baseURL: serverUrl || 'http://localhost:3000',
+  baseURL: import.meta.env.VITE_API_URL || serverUrl || 'http://localhost:3000',
   headers: {
     'Content-Type': 'application/json',
   },
