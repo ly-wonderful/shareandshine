@@ -23,7 +23,19 @@ export default function MemberForm() {
   const [success, setSuccess] = useState(false);
 
   const submitMutation = useMutation({
-    mutationFn: (data) => api.entities.Member.create(data),
+    mutationFn: async (data) => {
+      // Store in localStorage for admin notifications
+      const submissions = JSON.parse(localStorage.getItem('memberSubmissions') || '[]');
+      submissions.push({
+        ...data,
+        submittedAt: new Date().toISOString(),
+        status: 'pending'
+      });
+      localStorage.setItem('memberSubmissions', JSON.stringify(submissions));
+      
+      // Also send to backend API
+      return api.entities.Member.create(data);
+    },
     onSuccess: () => {
       setSuccess(true);
       setFormData({

@@ -149,7 +149,7 @@ export default function Home() {
       </section>
 
       {/* Stats Section */}
-      {/* <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
@@ -170,7 +170,7 @@ export default function Home() {
             ))}
           </div>
         </div>
-      </section> */}
+      </section>
 
       <section className="relative min-h-screen flex items-center justify-centerpy-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-orange-100 to-amber-100" id="about">
         <div className="max-w-4xl mx-auto text-center">

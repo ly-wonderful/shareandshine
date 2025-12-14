@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Plus, Edit2, Trash2, Loader2, X, Image as ImageIcon, Video, Upload, Bell, User, Download } from "lucide-react";
+import { Plus, Edit2, Trash2, Loader2, X, Image as ImageIcon, Video, Upload, Bell, User, Download, UserPlus, Briefcase } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function AdminPastEvents() {
@@ -48,6 +48,12 @@ export default function AdminPastEvents() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [showRegistrations, setShowRegistrations] = useState(false);
   const [selectedEventFilter, setSelectedEventFilter] = useState('all');
+  const [memberSubmissions, setMemberSubmissions] = useState([]);
+  const [memberUnreadCount, setMemberUnreadCount] = useState(0);
+  const [showMembers, setShowMembers] = useState(false);
+  const [partnerSubmissions, setPartnerSubmissions] = useState([]);
+  const [partnerUnreadCount, setPartnerUnreadCount] = useState(0);
+  const [showPartners, setShowPartners] = useState(false);
   const fileInputRef = useRef(null);
   const featuredInputRef = useRef(null);
 
@@ -74,6 +80,52 @@ export default function AdminPastEvents() {
     
     // Poll for new registrations every 5 seconds
     const interval = setInterval(loadRegistrations, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Load member submissions
+  useEffect(() => {
+    const loadMembers = () => {
+      const stored = localStorage.getItem('memberSubmissions');
+      if (stored) {
+        const subs = JSON.parse(stored);
+        setMemberSubmissions(subs);
+        
+        const lastViewedTime = localStorage.getItem('adminLastViewedMembers');
+        if (lastViewedTime) {
+          const unread = subs.filter(sub => new Date(sub.submittedAt) > new Date(lastViewedTime));
+          setMemberUnreadCount(unread.length);
+        } else {
+          setMemberUnreadCount(subs.length);
+        }
+      }
+    };
+    
+    loadMembers();
+    const interval = setInterval(loadMembers, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Load partner submissions
+  useEffect(() => {
+    const loadPartners = () => {
+      const stored = localStorage.getItem('partnerSubmissions');
+      if (stored) {
+        const subs = JSON.parse(stored);
+        setPartnerSubmissions(subs);
+        
+        const lastViewedTime = localStorage.getItem('adminLastViewedPartners');
+        if (lastViewedTime) {
+          const unread = subs.filter(sub => new Date(sub.submittedAt) > new Date(lastViewedTime));
+          setPartnerUnreadCount(unread.length);
+        } else {
+          setPartnerUnreadCount(subs.length);
+        }
+      }
+    };
+    
+    loadPartners();
+    const interval = setInterval(loadPartners, 5000);
     return () => clearInterval(interval);
   }, []);
 
@@ -121,6 +173,90 @@ export default function AdminPastEvents() {
     const url = URL.createObjectURL(blob);
     link.setAttribute('href', url);
     link.setAttribute('download', `${filename}-${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // Handle viewing member submissions
+  const handleViewMembers = () => {
+    setShowMembers(true);
+    setMemberUnreadCount(0);
+    localStorage.setItem('adminLastViewedMembers', new Date().toISOString());
+  };
+
+  // Handle viewing partner submissions
+  const handleViewPartners = () => {
+    setShowPartners(true);
+    setPartnerUnreadCount(0);
+    localStorage.setItem('adminLastViewedPartners', new Date().toISOString());
+  };
+
+  // Download member submissions as CSV
+  const downloadMemberSubmissions = () => {
+    if (memberSubmissions.length === 0) {
+      alert('No volunteer applications found');
+      return;
+    }
+
+    const headers = ['Name', 'Email', 'Phone', 'Age', 'School/Organization', 'Interests', 'Why Join', 'Status', 'Submitted At'];
+    const csvContent = [
+      headers.join(','),
+      ...memberSubmissions.map(sub => [
+        `"${sub.full_name}"`,
+        `"${sub.email}"`,
+        `"${sub.phone}"`,
+        sub.age,
+        `"${sub.school_organization || ''}"`,
+        `"${sub.interests || ''}"`,
+        `"${sub.why_join || ''}"`,
+        sub.status,
+        `"${new Date(sub.submittedAt).toLocaleString()}"`
+      ].join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `volunteer-applications-${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // Download partner submissions as CSV
+  const downloadPartnerSubmissions = () => {
+    if (partnerSubmissions.length === 0) {
+      alert('No partner applications found');
+      return;
+    }
+
+    const headers = ['Organization', 'Contact Person', 'Email', 'Phone', 'Type', 'Website', 'Partnership Interest', 'Donation Amount', 'Event Ideas', 'Status', 'Submitted At'];
+    const csvContent = [
+      headers.join(','),
+      ...partnerSubmissions.map(sub => [
+        `"${sub.organization_name}"`,
+        `"${sub.contact_person}"`,
+        `"${sub.email}"`,
+        `"${sub.phone}"`,
+        `"${sub.organization_type || ''}"`,
+        `"${sub.website || ''}"`,
+        `"${Array.isArray(sub.partnership_interest) ? sub.partnership_interest.join('; ') : sub.partnership_interest || ''}"`,
+        sub.donation_amount || '',
+        `"${sub.event_ideas || ''}"`,
+        sub.status,
+        `"${new Date(sub.submittedAt).toLocaleString()}"`
+      ].join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `partner-applications-${new Date().toISOString().split('T')[0]}.csv`);
     link.style.visibility = 'hidden';
     document.body.appendChild(link);
     link.click();
@@ -635,7 +771,7 @@ export default function AdminPastEvents() {
           </div>
           
           <div className="flex items-center gap-3">
-            {/* Notification Button */}
+            {/* Event Registration Notifications */}
             <Button
               variant="outline"
               className="relative gap-2"
@@ -646,6 +782,36 @@ export default function AdminPastEvents() {
               {unreadCount > 0 && (
                 <Badge className="absolute -top-2 -right-2 bg-red-500 text-white px-2 py-0.5 text-xs">
                   {unreadCount}
+                </Badge>
+              )}
+            </Button>
+
+            {/* Volunteer Application Notifications */}
+            <Button
+              variant="outline"
+              className="relative gap-2"
+              onClick={handleViewMembers}
+            >
+              <UserPlus className="w-4 h-4" />
+              Volunteers
+              {memberUnreadCount > 0 && (
+                <Badge className="absolute -top-2 -right-2 bg-red-500 text-white px-2 py-0.5 text-xs">
+                  {memberUnreadCount}
+                </Badge>
+              )}
+            </Button>
+
+            {/* Partner Application Notifications */}
+            <Button
+              variant="outline"
+              className="relative gap-2"
+              onClick={handleViewPartners}
+            >
+              <Briefcase className="w-4 h-4" />
+              Partners
+              {partnerUnreadCount > 0 && (
+                <Badge className="absolute -top-2 -right-2 bg-red-500 text-white px-2 py-0.5 text-xs">
+                  {partnerUnreadCount}
                 </Badge>
               )}
             </Button>
@@ -765,6 +931,180 @@ export default function AdminPastEvents() {
                   );
                 });
               })()}
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Volunteer Applications View */}
+        <Dialog open={showMembers} onOpenChange={setShowMembers}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <UserPlus className="w-5 h-5" />
+                  Volunteer Applications ({memberSubmissions.length})
+                </div>
+                <Button
+                  onClick={downloadMemberSubmissions}
+                  className="gap-2 bg-green-600 hover:bg-green-700"
+                >
+                  <Download className="w-4 h-4" />
+                  Download Excel
+                </Button>
+              </DialogTitle>
+            </DialogHeader>
+            
+            <div className="space-y-4 mt-4">
+              {memberSubmissions.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  No volunteer applications yet
+                </div>
+              ) : (
+                memberSubmissions.map((sub, index) => (
+                  <Card key={index} className="p-4 hover:shadow-md transition-shadow">
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <Badge className="bg-blue-100 text-blue-800">
+                          {sub.status === 'pending' ? 'Pending' : sub.status}
+                        </Badge>
+                        <span className="text-sm text-gray-500">
+                          {new Date(sub.submittedAt).toLocaleString()}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-3 text-sm">
+                        <div>
+                          <span className="font-semibold text-gray-700">Name:</span>
+                          <span className="ml-2 text-gray-900">{sub.full_name}</span>
+                        </div>
+                        <div>
+                          <span className="font-semibold text-gray-700">Age:</span>
+                          <span className="ml-2 text-gray-900">{sub.age}</span>
+                        </div>
+                        <div>
+                          <span className="font-semibold text-gray-700">Email:</span>
+                          <span className="ml-2 text-gray-900">{sub.email}</span>
+                        </div>
+                        <div>
+                          <span className="font-semibold text-gray-700">Phone:</span>
+                          <span className="ml-2 text-gray-900">{sub.phone}</span>
+                        </div>
+                        <div className="col-span-2">
+                          <span className="font-semibold text-gray-700">School/Organization:</span>
+                          <span className="ml-2 text-gray-900">{sub.school_organization}</span>
+                        </div>
+                        <div className="col-span-2">
+                          <span className="font-semibold text-gray-700">Interests:</span>
+                          <p className="mt-1 text-gray-900">{sub.interests}</p>
+                        </div>
+                        <div className="col-span-2">
+                          <span className="font-semibold text-gray-700">Why Join:</span>
+                          <p className="mt-1 text-gray-900">{sub.why_join}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                ))
+              )}
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Partner Applications View */}
+        <Dialog open={showPartners} onOpenChange={setShowPartners}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Briefcase className="w-5 h-5" />
+                  Partner Applications ({partnerSubmissions.length})
+                </div>
+                <Button
+                  onClick={downloadPartnerSubmissions}
+                  className="gap-2 bg-green-600 hover:bg-green-700"
+                >
+                  <Download className="w-4 h-4" />
+                  Download Excel
+                </Button>
+              </DialogTitle>
+            </DialogHeader>
+            
+            <div className="space-y-4 mt-4">
+              {partnerSubmissions.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  No partner applications yet
+                </div>
+              ) : (
+                partnerSubmissions.map((sub, index) => (
+                  <Card key={index} className="p-4 hover:shadow-md transition-shadow">
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <Badge className="bg-purple-100 text-purple-800">
+                          {sub.status === 'pending' ? 'Pending' : sub.status}
+                        </Badge>
+                        <span className="text-sm text-gray-500">
+                          {new Date(sub.submittedAt).toLocaleString()}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-3 text-sm">
+                        <div>
+                          <span className="font-semibold text-gray-700">Organization:</span>
+                          <span className="ml-2 text-gray-900">{sub.organization_name}</span>
+                        </div>
+                        <div>
+                          <span className="font-semibold text-gray-700">Contact:</span>
+                          <span className="ml-2 text-gray-900">{sub.contact_person}</span>
+                        </div>
+                        <div>
+                          <span className="font-semibold text-gray-700">Email:</span>
+                          <span className="ml-2 text-gray-900">{sub.email}</span>
+                        </div>
+                        <div>
+                          <span className="font-semibold text-gray-700">Phone:</span>
+                          <span className="ml-2 text-gray-900">{sub.phone}</span>
+                        </div>
+                        <div>
+                          <span className="font-semibold text-gray-700">Type:</span>
+                          <span className="ml-2 text-gray-900">{sub.organization_type}</span>
+                        </div>
+                        {sub.website && (
+                          <div>
+                            <span className="font-semibold text-gray-700">Website:</span>
+                            <a href={sub.website} target="_blank" rel="noopener noreferrer" className="ml-2 text-blue-600 hover:underline">
+                              {sub.website}
+                            </a>
+                          </div>
+                        )}
+                        <div className="col-span-2">
+                          <span className="font-semibold text-gray-700">Partnership Interest:</span>
+                          <p className="mt-1 text-gray-900">
+                            {Array.isArray(sub.partnership_interest) 
+                              ? sub.partnership_interest.join(', ') 
+                              : sub.partnership_interest}
+                          </p>
+                        </div>
+                        {sub.donation_amount && (
+                          <div className="col-span-2">
+                            <span className="font-semibold text-gray-700">Donation Amount:</span>
+                            <span className="ml-2 text-gray-900">{sub.donation_amount}</span>
+                          </div>
+                        )}
+                        {sub.event_ideas && (
+                          <div className="col-span-2">
+                            <span className="font-semibold text-gray-700">Event Ideas:</span>
+                            <p className="mt-1 text-gray-900">{sub.event_ideas}</p>
+                          </div>
+                        )}
+                        {sub.message && (
+                          <div className="col-span-2">
+                            <span className="font-semibold text-gray-700">Message:</span>
+                            <p className="mt-1 text-gray-900">{sub.message}</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </Card>
+                ))
+              )}
             </div>
           </DialogContent>
         </Dialog>
